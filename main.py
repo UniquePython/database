@@ -17,8 +17,14 @@ def save_data(filepath, data):
         json.dump(data, file, indent=4)
 
 
-def create_record(name, email):
-    return {"name": name, "email": email}
+def get_next_id(data):
+    if not data:
+        return 1
+    return max(record.get("id", 0) for record in data) + 1
+
+
+def create_record(record_id, name, email):
+    return {"id": record_id, "name": name, "email": email}
 
 
 def main():
@@ -27,10 +33,12 @@ def main():
     filepath = input("Enter filepath: ")
 
     db = load_data(filepath)
-    db.append(create_record(name, email))
+    next_id = get_next_id(db)
+
+    db.append(create_record(next_id, name, email))
     save_data(filepath, db)
 
-    print(f"Record for {name} saved successfully!")
+    print(f"Record #{next_id} for {name} saved successfully!")
 
 
 if __name__ == "__main__":
